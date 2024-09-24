@@ -44,11 +44,11 @@ public struct ImageViewer: View {
     }
     
 //    public init(
-//        isPresent: Binding<Bool>? = nil,
+//        isPresented: Binding<Bool>? = nil,
 //        url: URL,
 //        @ViewBuilder label: () -> Label
 //    ) {
-//        self.isPresent = isPresent
+//        self.isPresented = isPresented
 //        self.url = url
 //        self.image = .constant(nil)
 //        self.label = AnyView(label())
@@ -136,7 +136,7 @@ public struct ImageViewer: View {
                    window == imageViewerWindow
                    /*window == self.currentWindow*/ {
                     imageViewerWindow?.close()
-                    self.isPresent?.wrappedValue = false
+                    self.isPresented?.wrappedValue = false
                     self.image.wrappedValue = nil
                 }
             }
@@ -274,11 +274,11 @@ extension View {
     
 //    @ViewBuilder
 //    public func imageViewer(
-//        isPresent: Binding<Bool>? = nil,
+//        isPresented: Binding<Bool>? = nil,
 //        url: URL?,
 //        imageSize: CGSize? = nil
 //    ) -> some View {
-//        ImageViewer(isPresent: isPresent, url: url, imageSize: imageSize) {
+//        ImageViewer(isPresented: isPresented, url: url, imageSize: imageSize) {
 //            self
 //        }
 //    }
