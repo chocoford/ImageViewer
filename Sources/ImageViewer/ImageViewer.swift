@@ -10,7 +10,7 @@ import SwiftUI
 public struct ImageViewer: View {
     @Environment(\.isEnabled) var isEnabled
     
-    var isPresent: Binding<Bool>?
+    var isPresented: Binding<Bool>?
     
     var image: Binding<Image?>
     var url: URL?
@@ -31,12 +31,12 @@ public struct ImageViewer: View {
 #endif
     
     public init<Content: View, Label: View>(
-        isPresent: Binding<Bool>? = nil,
+        isPresented: Binding<Bool>? = nil,
         imageSize: CGSize? = nil,
         @ViewBuilder content: () -> Content,
         @ViewBuilder label: () -> Label
     ) {
-        self.isPresent = isPresent
+        self.isPresented = isPresented
         self.image = .constant(nil)
         self.imageSize = imageSize
         self.content = AnyView(content())
@@ -56,12 +56,12 @@ public struct ImageViewer: View {
     
 
     public init<Label: View>(
-        isPresent: Binding<Bool>? = nil,
+        isPresented: Binding<Bool>? = nil,
         image: Image,
         imageSize: CGSize? = nil,
         @ViewBuilder label: @escaping () -> Label
     ) {
-        self.init(isPresent: isPresent, imageSize: imageSize) {
+        self.init(isPresented: isPresented, imageSize: imageSize) {
             image.resizable()
         } label: {
             label()
@@ -75,7 +75,7 @@ public struct ImageViewer: View {
         @ViewBuilder label: () -> Label
     ) {
         self.init(
-            isPresent: Binding(get: {
+            isPresented: Binding(get: {
                 image.wrappedValue != nil
             }, set: { val in
                 image.wrappedValue = nil
@@ -97,7 +97,7 @@ public struct ImageViewer: View {
             .gesture(
                 TapGesture()
                     .onEnded { _ in
-                        if self.isPresent != nil { return }
+                        if self.isPresented != nil { return }
                         openViewer()
                     }
             )
@@ -105,6 +105,13 @@ public struct ImageViewer: View {
                 if val != nil {
                     openViewer()
                 } else {
+                    closeViewer()
+                }
+            }
+            .onChange(of: self.isPresented?.wrappedValue) { newValue in
+                if newValue == true {
+                    openViewer()
+                } else if newValue == false {
                     closeViewer()
                 }
             }
@@ -223,12 +230,12 @@ extension ImageViewer {
 extension View {
     @MainActor @ViewBuilder
     public func imageViewer(
-        isPresent: Binding<Bool>? = nil,
+        isPresented: Binding<Bool>? = nil,
         image: Image,
         imageSize: CGSize? = nil
     ) -> some View {
         ImageViewer(
-            isPresent: isPresent,
+            isPresented: isPresented,
             image: image,
             imageSize: imageSize
         ) {
@@ -251,12 +258,12 @@ extension View {
     
     @MainActor @ViewBuilder
     public func imageViewer<I: View>(
-        isPresent: Binding<Bool>? = nil,
+        isPresented: Binding<Bool>? = nil,
         imageSize: CGSize? = nil,
         @ViewBuilder content: () -> I
     ) -> some View {
         ImageViewer(
-            isPresent: isPresent,
+            isPresented: isPresented,
             imageSize: imageSize
         ) {
             content()
