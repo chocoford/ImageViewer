@@ -220,52 +220,62 @@ extension ImageViewer {
     }
 }
 
-//extension View {
-//    @ViewBuilder
-//    public func imageViewer(
-//        isPresent: Binding<Bool>? = nil,
-//        image: Image,
-//        imageSize: CGSize? = nil,
-//        imageRenderer: ImageViewerView.ImageRenderer = .animatableCached
-//    ) -> some View {
-//        ImageViewer(
-//            isPresent: isPresent,
-//            image: image,
-//            imageSize: imageSize,
-//            imageRenderer: imageRenderer
-//        ) {
-//            self
-//        }
-//    }
-//    
-//    @ViewBuilder
-//    public func imageViewer(
-//        image: Binding<Image?>,
-//        imageSize: CGSize? = nil,
-//        imageRenderer: ImageViewerView.ImageRenderer = .animatableCached
-//    ) -> some View {
-//        ImageViewer(
-//            image: image,
-//            imageSize: imageSize,
-//            imageRenderer: imageRenderer
-//        ) {
-//            self
-//        }
-//    }
-//    
+extension View {
+    @MainActor @ViewBuilder
+    public func imageViewer(
+        isPresent: Binding<Bool>? = nil,
+        image: Image,
+        imageSize: CGSize? = nil
+    ) -> some View {
+        ImageViewer(
+            isPresent: isPresent,
+            image: image,
+            imageSize: imageSize
+        ) {
+            self
+        }
+    }
+    
+    @MainActor @ViewBuilder
+    public func imageViewer(
+        image: Binding<Image?>,
+        imageSize: CGSize? = nil
+    ) -> some View {
+        ImageViewer(
+            image: image,
+            imageSize: imageSize
+        ) {
+            self
+        }
+    }
+    
+    @MainActor @ViewBuilder
+    public func imageViewer<I: View>(
+        isPresent: Binding<Bool>? = nil,
+        imageSize: CGSize? = nil,
+        @ViewBuilder content: () -> I
+    ) -> some View {
+        ImageViewer(
+            isPresent: isPresent,
+            imageSize: imageSize
+        ) {
+            content()
+        } label: {
+            self
+        }
+    }
+    
 //    @ViewBuilder
 //    public func imageViewer(
 //        isPresent: Binding<Bool>? = nil,
 //        url: URL?,
-//        thumbnailURL: URL? = nil,
-//        imageSize: CGSize? = nil,
-//        imageRenderer: ImageViewerView.ImageRenderer = .animatableCached
+//        imageSize: CGSize? = nil
 //    ) -> some View {
-//        ImageViewer(isPresent: isPresent, url: url, thumbnailURL: thumbnailURL, imageSize: imageSize, imageRenderer: imageRenderer) {
+//        ImageViewer(isPresent: isPresent, url: url, imageSize: imageSize) {
 //            self
 //        }
 //    }
-//}
+}
 
 
 
