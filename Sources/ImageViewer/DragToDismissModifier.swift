@@ -84,7 +84,7 @@ public struct DragToDismissModifier: ViewModifier {
                                         self.backgroundOpacity = 0
                                         self.dismissProgress?.wrappedValue = 1
                                         self.onDismiss()
-                                    } else if #available(iOS 17.0, *) {
+                                    } else if #available(iOS 17.0, macOS 14.0, *) {
                                         withAnimation(.smooth(duration: 0.5)) {
                                             self.dragOffset = self.dragOffsetPredicted
                                             self.backgroundOpacity = 0

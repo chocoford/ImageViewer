@@ -29,7 +29,8 @@ class CenteredClipView: NSClipView {
 struct ZoomableScrollView<Content: View>: NSViewRepresentable {
     var size: CGSize
     private var content: () -> Content
-    
+    var config = Config()
+
     init(size: CGSize, @ViewBuilder content: @escaping () -> Content) {
         self.size = size
         self.content = content
@@ -187,6 +188,8 @@ struct ZoomableScrollView<Content: View>: UIViewRepresentable {
     }
 }
 
+#endif
+
 extension ZoomableScrollView {
     public class Config {
         var isScaling: Binding<Bool>?
@@ -212,8 +215,6 @@ extension ZoomableScrollView {
         return self
     }
 }
-#endif
-
 
 
 #if DEBUG

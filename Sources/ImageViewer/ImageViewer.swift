@@ -42,6 +42,18 @@ public struct ImageViewer: View {
         self.content = AnyView(content())
         self.label = AnyView(label())
     }
+    
+//    public init(
+//        isPresent: Binding<Bool>? = nil,
+//        url: URL,
+//        @ViewBuilder label: () -> Label
+//    ) {
+//        self.isPresent = isPresent
+//        self.url = url
+//        self.image = .constant(nil)
+//        self.label = AnyView(label())
+//    }
+    
 
     public init<Label: View>(
         isPresent: Binding<Bool>? = nil,
@@ -49,13 +61,11 @@ public struct ImageViewer: View {
         imageSize: CGSize? = nil,
         @ViewBuilder label: @escaping () -> Label
     ) {
-        self.isPresent = isPresent
-        self.image = .constant(image)
-        self.url = nil
-        self.thumbnailURL = nil
-        self.imageSize = imageSize
-        self.content = AnyView(image.resizable())
-        self.label = AnyView(label())
+        self.init(isPresent: isPresent, imageSize: imageSize) {
+            image.resizable()
+        } label: {
+            label()
+        }
     }
     
     
@@ -64,20 +74,20 @@ public struct ImageViewer: View {
         imageSize: CGSize? = nil,
         @ViewBuilder label: () -> Label
     ) {
-        self.isPresent = Binding(get: {
-            image.wrappedValue != nil
-        }, set: { val in
-            image.wrappedValue = nil
-        })
-        self.image = image
-        self.url = nil
-        self.thumbnailURL = nil
-        self.imageSize = imageSize
-        self.content = AnyView(
-//            image.wrappedValue
-            EmptyView()
-        )
-        self.label = AnyView(label())
+        self.init(
+            isPresent: Binding(get: {
+                image.wrappedValue != nil
+            }, set: { val in
+                image.wrappedValue = nil
+            }),
+            imageSize: imageSize
+        ) {
+            if let image = image.wrappedValue {
+                image
+            }
+        } label: {
+            label()
+        }
     }
     
     
@@ -155,9 +165,15 @@ extension ImageViewer {
         let view: ImageViewerView
         
         if let image = self.image.wrappedValue {
-            view = ImageViewerView(image: image)
+            view = ImageViewerView {
+                image
+            }
+        } else if let url {
+            view = ImageViewerView(url: url)
         } else {
-            view = ImageViewerView(url: url, thumbnailURL: thumbnailURL, imageRenderer: imageRenderer)
+            view = ImageViewerView {
+                self.content
+            }
         }
         
         let contentView = NSHostingView(rootView: view)
@@ -172,11 +188,11 @@ extension ImageViewer {
                 .init(width: min(imageSize.width, screen.frame.width * 0.9),
                       height: min(imageSize.height, screen.frame.height * 0.9))
             )
-        } else {
-            window.animator().setContentSize(
-                .init(width: screen.frame.width,
-                      height: screen.frame.height)
-            )
+//        } else {
+//            window.animator().setContentSize(
+//                .init(width: screen.frame.width,
+//                      height: screen.frame.height)
+//            )
         }
         
         NSApp.activate(ignoringOtherApps: true)
